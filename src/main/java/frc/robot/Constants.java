@@ -20,8 +20,8 @@ public final class Constants {
   }
 
   public final class CAN_ID_Constants {
-    public static final int kLeftMotorID = 1;
-    public static final int kRigthMotorID = 2;
+    public static final int kLeftMotorID = 2;
+    public static final int kRigthMotorID = 1;
     public static final int kElevatorMotorID = 5;
     public static final int kLeftClawMotorID = 6;
     public static final int kRightClawMotorID = 7;

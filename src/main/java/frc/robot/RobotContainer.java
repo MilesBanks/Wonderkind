@@ -12,6 +12,7 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -39,6 +40,12 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
+
+    m_Drivetrain.setDefaultCommand(
+    Commands.run(
+      () ->
+          m_Drivetrain.OurDrive(m_driverController.getLeftY(), m_driverController.getRightX()),m_Drivetrain));
+    
   }
 
   /**
