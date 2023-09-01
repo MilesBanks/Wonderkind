@@ -16,7 +16,7 @@ public class Drivetrain extends SubsystemBase {
   private final CANSparkMax LeftMotor = new CANSparkMax(Constants.CAN_ID_Constants.kLeftMotorID, MotorType.kBrushless);
   private final CANSparkMax RigthMotor = new CANSparkMax(Constants.CAN_ID_Constants.kRigthMotorID, MotorType.kBrushless);
 
-  private final RelativeEncoder lefRelativeEncoder = LeftMotor.getEncoder();
+  private final RelativeEncoder leftRelativeEncoder = LeftMotor.getEncoder();
   private final RelativeEncoder righRelativeEncoder = RigthMotor.getEncoder();
 
   private final DifferentialDrive Drive = new DifferentialDrive(LeftMotor, RigthMotor);
@@ -35,7 +35,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void ResetEncoders(){
-      lefRelativeEncoder.setPosition(0);
+      leftRelativeEncoder.setPosition(0);
       righRelativeEncoder.setPosition(0);
     }
 
