@@ -8,6 +8,8 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -32,6 +34,15 @@ public class Elevator extends SubsystemBase {
     Elevator.set(speed);
   }
 
+  // elevatorForwardCommand with position.
+  //public Command elevatorForwardCommand(double speed, int position){
+  //  return new StartEndCommand(() -> this.elevatorForward(speed), () -> this.elevatorForward(0), this);
+  //}
+
+  public Command elevatorForwardCommand(double speed){
+    return new StartEndCommand(() -> this.elevatorForward(speed), () -> this.elevatorForward(0), this);
+  }
+
   public void elevatorBackwords(double speed, int position){
     Elevator.set(-speed);
       if (elevatorEncoder.getPosition() <= position)
@@ -41,6 +52,11 @@ public class Elevator extends SubsystemBase {
   public void elevatorBackwords(double speed){
 
     Elevator.set(-speed);
+  }
+
+  public Command elevatorBackwordsCommand(double speed){
+    return new StartEndCommand(() -> this.elevatorBackwords(speed), () -> this.elevatorBackwords(0.0), this);
+
   }
 
   public void elevatorStop(){
