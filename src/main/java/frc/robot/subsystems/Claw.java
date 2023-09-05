@@ -7,12 +7,14 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Claw extends SubsystemBase {
   private final CANSparkMax m_ClawLeft = new CANSparkMax(Constants.CAN_ID_Constants.kLeftClawMotorID, MotorType.kBrushless);
-  private final CANSparkMax m_ClawRight = new CANSparkMax(Constants.CAN_ID_Constants.kRightClawMotorID, MotorType.kBrushless); //change CAN ID to 8
+  private final CANSparkMax m_ClawRight = new CANSparkMax(Constants.CAN_ID_Constants.kRightClawMotorID, MotorType.kBrushless); 
 
   /** Creates a new Claw. */
   public Claw() {
@@ -38,17 +40,36 @@ public class Claw extends SubsystemBase {
     m_ClawLeft.set(-speed);
     m_ClawRight.set(speed);
   }
+
+  public Command clawCloseCommand(double speed){
+    return new StartEndCommand(() -> this.clawClose(speed), () -> this.clawClose(0.0), this);
+  }
+
   public void clawOpen(double speed){
     m_ClawLeft.set(speed);
-    m_ClawRight.set(speed);
+    m_ClawRight.set(-speed);
   }
+
+  public Command clawOpenCommand(double speed){
+    return new StartEndCommand(() -> this.clawOpen(speed), () -> this.clawOpen(0.0), this);
+  }
+
   public void clawShiftRight (double speed) {
     m_ClawLeft.set(speed);
     m_ClawRight.set(speed);
   }
+
+  public Command clawShiftRightCommand(double speed){
+    return new StartEndCommand(() -> this.clawShiftRight(speed), () -> this.clawShiftRight(0.0), this);
+  }
+
   public void clawShiftLeft(double speed) {
     m_ClawLeft.set(-speed);
-    m_ClawRight.set(speed);
+    m_ClawRight.set(-speed); //added negative
+  }
+
+  public Command clawShiftLeftCommand(double speed){
+    return new StartEndCommand(() -> this.clawShiftLeft(speed), () -> this.clawShiftLeft(0.0), this);
   }
   public void clawStop(){
     m_ClawLeft.set(0);

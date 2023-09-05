@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.PlayOneCube;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
@@ -33,7 +34,7 @@ public class RobotContainer {
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
-  private final CommandXboxController m_coDrivController =
+  private final CommandXboxController m_coDriverController =
       new CommandXboxController(Constants.OperatorConstants.kCoDriverControllerPort);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -45,6 +46,7 @@ public class RobotContainer {
     Commands.run(
       () ->
           m_Drivetrain.OurDrive(m_driverController.getLeftY(), m_driverController.getRightX()),m_Drivetrain));
+
 
 
     
@@ -67,7 +69,16 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
-   
+
+    m_coDriverController.povUp().whileTrue(m_Elevator.elevatorForwardCommand(0.8));
+    m_coDriverController.povDown().whileTrue(m_Elevator.elevatorBackwordsCommand(0.4));
+
+    m_coDriverController.rightBumper().whileTrue(m_Claw.clawCloseCommand(0.2));
+    m_coDriverController.leftBumper().whileTrue(m_Claw.clawOpenCommand(0.2)); 
+
+    m_coDriverController.rightTrigger().whileTrue(m_Claw.clawShiftRightCommand(0.2));
+    m_coDriverController.leftTrigger().whileTrue(m_Claw.clawShiftLeftCommand(0.2));
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -76,6 +87,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    return new PlayOneCube(m_Elevator, m_Claw);
+
   }
 }

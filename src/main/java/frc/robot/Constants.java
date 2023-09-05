@@ -24,7 +24,7 @@ public final class Constants {
     public static final int kRigthMotorID = 1;
     public static final int kElevatorMotorID = 5;
     public static final int kLeftClawMotorID = 6;
-    public static final int kRightClawMotorID = 7;
+    public static final int kRightClawMotorID = 8;
     
 
 
