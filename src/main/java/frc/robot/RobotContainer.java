@@ -12,6 +12,7 @@ import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ExampleSubsystem;
+//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -70,14 +71,14 @@ public class RobotContainer {
     // cancelling on release.
     m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
-    m_coDriverController.povUp().whileTrue(m_Elevator.elevatorForwardCommand(0.8));
-    m_coDriverController.povDown().whileTrue(m_Elevator.elevatorBackwordsCommand(0.4));
+    m_coDriverController.povUp().whileTrue(m_Elevator.elevatorForwardCommand(Constants.SpeedConstants.kUpElevatorSpeed));
+    m_coDriverController.povDown().whileTrue(m_Elevator.elevatorBackwordsCommand(Constants.SpeedConstants.kDownElevatorSpeed));
 
-    m_coDriverController.rightBumper().whileTrue(m_Claw.clawCloseCommand(0.2));
-    m_coDriverController.leftBumper().whileTrue(m_Claw.clawOpenCommand(0.2)); 
+    m_coDriverController.rightBumper().whileTrue(m_Claw.clawCloseCommand(Constants.SpeedConstants.kClawCloseSpeed));
+    m_coDriverController.leftBumper().whileTrue(m_Claw.clawOpenCommand(Constants.SpeedConstants.kClawOpenSpeed)); 
 
-    m_coDriverController.rightTrigger().whileTrue(m_Claw.clawShiftRightCommand(0.2));
-    m_coDriverController.leftTrigger().whileTrue(m_Claw.clawShiftLeftCommand(0.2));
+    m_coDriverController.rightTrigger().whileTrue(m_Claw.clawShiftRightCommand(Constants.SpeedConstants.kClawShiftSpeed));
+    m_coDriverController.leftTrigger().whileTrue(m_Claw.clawShiftLeftCommand(Constants.SpeedConstants.kClawShiftSpeed));
   }
 
   /**

@@ -14,9 +14,9 @@ import frc.robot.subsystems.Elevator;
 public class PlayOneCube extends SequentialCommandGroup {
   public PlayOneCube(Elevator m_Elevator, Claw m_Claw) {
     addCommands(
-      m_Claw.clawCloseCommand(0.2).withTimeout(1),
-      m_Elevator.elevatorForwardCommand(0.2).withTimeout(3.5),
-      m_Claw.clawOpenCommand(0.2).withTimeout(1),
+      m_Claw.clawCloseCommand(0.35).withTimeout(1),
+      m_Elevator.elevatorForwardCommand(0.2).withTimeout(4),
+      m_Claw.clawOpenCommand(0.35).withTimeout(1),
       m_Elevator.elevatorBackwordsCommand(0.2).withTimeout(2)
     );
   }

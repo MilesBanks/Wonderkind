@@ -25,8 +25,13 @@ public final class Constants {
     public static final int kElevatorMotorID = 5;
     public static final int kLeftClawMotorID = 6;
     public static final int kRightClawMotorID = 8;
+  }
+  public final class SpeedConstants {
+    public static final double kUpElevatorSpeed = 0.8;
+    public static final double kDownElevatorSpeed = 0.4;
+    public static final double kClawOpenSpeed = 0.2;
+    public static final double kClawCloseSpeed = 0.2;
+    public static final double kClawShiftSpeed = 0.2;
     
-
-
 }
 }

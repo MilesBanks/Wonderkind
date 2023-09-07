@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -15,17 +16,29 @@ import frc.robot.Constants;
 public class Claw extends SubsystemBase {
   private final CANSparkMax m_ClawLeft = new CANSparkMax(Constants.CAN_ID_Constants.kLeftClawMotorID, MotorType.kBrushless);
   private final CANSparkMax m_ClawRight = new CANSparkMax(Constants.CAN_ID_Constants.kRightClawMotorID, MotorType.kBrushless); 
-
+  private double m_ClawLeftPosition;
+  private double m_ClawRightPosition;
+  private double m_ClawLeftSpeed;
+  private double m_ClawRightSpeed;
+  private double m_ClawLeftVelocity;
+  private double m_ClawRightVelocity;
   /** Creates a new Claw. */
   public Claw() {
     m_ClawLeft.getEncoder().setPosition(0);
     m_ClawRight.getEncoder().setPosition(0);
-  }
-    
+
+  }   
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    m_ClawLeftSpeed = m_ClawLeft.get();
+    m_ClawRightSpeed = m_ClawRight.get();
+    m_ClawLeftPosition = m_ClawLeft.getEncoder().getPosition();
+    m_ClawRightPosition = m_ClawRight.getEncoder().getPosition();
+    m_ClawLeftVelocity = m_ClawLeft.getEncoder().getVelocity();
+    m_ClawRightVelocity = m_ClawRight.getEncoder().getVelocity();
+
     if(getEncoders()[0]  <=0){
       if(m_ClawLeft.get() < 0)
         m_ClawLeft.set(0);
@@ -35,6 +48,22 @@ public class Claw extends SubsystemBase {
       if(m_ClawRight.get()<0)
         m_ClawRight.set(0);
     }
+
+    SmartDashboard.putNumber(("Left Claw Position"), m_ClawLeftPosition);
+    SmartDashboard.putNumber(("Right Claw Position"), m_ClawRightPosition);
+    SmartDashboard.putNumber(("Left Claw Velocity"), m_ClawLeftVelocity);
+    SmartDashboard.putNumber(("Right Claw Velocity"), m_ClawRightVelocity);
+    SmartDashboard.putNumber(("Left Claw Speed"), m_ClawLeftSpeed);
+    SmartDashboard.putNumber(("Right Claw Speed"), m_ClawRightSpeed);
+    
+  
+    if (m_ClawLeftPosition + m_ClawRightPosition >= 88 ){
+      if (m_ClawLeftSpeed + m_ClawRightSpeed >= Constants.SpeedConstants.kClawCloseSpeed) {
+        m_ClawLeft.set(0);
+        m_ClawRight.set(0);
+      }
+    }
+
   }
   public void clawClose(double speed){
     m_ClawLeft.set(-speed);

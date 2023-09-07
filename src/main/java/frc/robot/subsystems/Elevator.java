@@ -5,9 +5,10 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.RelativeEncoder;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -15,23 +16,39 @@ import frc.robot.Constants;
 
 public class Elevator extends SubsystemBase {
 
-  private CANSparkMax Elevator = new CANSparkMax(Constants.CAN_ID_Constants.kElevatorMotorID, MotorType.kBrushless);
-  private final RelativeEncoder elevatorEncoder = Elevator.getEncoder();
+  private CANSparkMax m_Elevator = new CANSparkMax(Constants.CAN_ID_Constants.kElevatorMotorID, MotorType.kBrushless);
+  private final RelativeEncoder elevatorEncoder = m_Elevator.getEncoder(); 
+    
+  private double m_ElevatorSpeed; 
+  private double m_ElevatorPosition; 
+  private double m_ElevatorVelocity;
   /** Creates a new Elevator. */
+  public Elevator() {// this is a constructer we added
+    m_Elevator.getEncoder().setPosition(0);
+    
+  }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    m_ElevatorSpeed = m_Elevator.get();
+    m_ElevatorPosition = m_Elevator.getEncoder().getPosition();
+    m_ElevatorVelocity = m_Elevator.getEncoder().getVelocity(); 
+
+    SmartDashboard.putNumber(("Elevator Position"), m_ElevatorPosition);
+    SmartDashboard.putNumber(("Elevator Velocity"), m_ElevatorVelocity);
+    SmartDashboard.putNumber(("Elevator Speed"), m_ElevatorSpeed);
+   
   }
 
   public void elevatorForward(double speed, int position){
-    Elevator.set(speed);
+    m_Elevator.set(speed);
       if (elevatorEncoder.getPosition() >= position)
         elevatorStop();
   }
 
   public void elevatorForward(double speed){
-    Elevator.set(speed);
+    m_Elevator.set(speed);
   }
 
   // elevatorForwardCommand with position.
@@ -44,14 +61,14 @@ public class Elevator extends SubsystemBase {
   }
 
   public void elevatorBackwords(double speed, int position){
-    Elevator.set(-speed);
+    m_Elevator.set(-speed);
       if (elevatorEncoder.getPosition() <= position)
         elevatorStop();
   }
 
   public void elevatorBackwords(double speed){
 
-    Elevator.set(-speed);
+    m_Elevator.set(-speed);
   }
 
   public Command elevatorBackwordsCommand(double speed){
@@ -60,7 +77,7 @@ public class Elevator extends SubsystemBase {
   }
 
   public void elevatorStop(){
-    Elevator.set(0);
+    m_Elevator.set(0);
   }
 
   public double getEncoder(){
