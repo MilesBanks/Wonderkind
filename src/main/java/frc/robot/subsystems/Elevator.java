@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
+import edu.wpi.first.wpilibj2.command.TrapezoidProfileCommand;
 import frc.robot.Constants;
 
 public class Elevator extends SubsystemBase {
@@ -20,13 +22,41 @@ public class Elevator extends SubsystemBase {
   private final RelativeEncoder elevatorEncoder = m_Elevator.getEncoder(); 
     
   private double m_ElevatorSpeed; 
-  private double m_ElevatorPosition; 
+  private double m_ElevatorPosition; // max: 57.643550872802734
   private double m_ElevatorVelocity;
   /** Creates a new Elevator. */
   public Elevator() {// this is a constructer we added
     m_Elevator.getEncoder().setPosition(0);
     
   }
+
+  /*
+  Goals:
+  - Prevent elevator from slamming to top and bottom.
+  - Prevent elevator from sliding down.
+  - Set software elevator height limit. Instead of hardware.
+  - (Stretch Goal): Have set height points for elevator mapped to a button
+
+  bool movingBool = false;
+  int heightVariable;
+
+  set movingBool to true when controller stick is up/down
+
+  speed going up = 0.8
+  speed not touching anything = 0
+  speed going down = -0.4
+
+  if (m_ElevatorSpeed == 0 && movingBool == true) {
+    heightVariable = m_ElevatorPosition;
+    movingBool = false;
+  }
+  
+  if (m_ElevatorSpeed == 0) {
+    PID here
+    Example:
+    motorSpeed = (m_ElevatorPosition - heightVariable)*someConstant
+  }
+  */
 
   @Override
   public void periodic() {
@@ -51,11 +81,6 @@ public class Elevator extends SubsystemBase {
     m_Elevator.set(speed);
   }
 
-  // elevatorForwardCommand with position.
-  //public Command elevatorForwardCommand(double speed, int position){
-  //  return new StartEndCommand(() -> this.elevatorForward(speed), () -> this.elevatorForward(0), this);
-  //}
-
   public Command elevatorForwardCommand(double speed){
     return new StartEndCommand(() -> this.elevatorForward(speed), () -> this.elevatorForward(0), this);
   }
@@ -66,9 +91,12 @@ public class Elevator extends SubsystemBase {
         elevatorStop();
   }
 
+  int slowThreshold = 15;
   public void elevatorBackwords(double speed){
-
-    m_Elevator.set(-speed);
+    if (m_ElevatorPosition <= slowThreshold) {
+      m_Elevator.set(-m_ElevatorPosition*(1/(slowThreshold/Constants.SpeedConstants.kDownElevatorSpeed)));
+    }
+    else { m_Elevator.set(-speed); }
   }
 
   public Command elevatorBackwordsCommand(double speed){
