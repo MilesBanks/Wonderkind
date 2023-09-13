@@ -12,51 +12,22 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
-import edu.wpi.first.wpilibj2.command.TrapezoidProfileCommand;
+
 import frc.robot.Constants;
+import frc.robot.commands.ElevatorPID;
 
 public class Elevator extends SubsystemBase {
 
-  private CANSparkMax m_Elevator = new CANSparkMax(Constants.CAN_ID_Constants.kElevatorMotorID, MotorType.kBrushless);
+  private static CANSparkMax m_Elevator = new CANSparkMax(Constants.CAN_ID_Constants.kElevatorMotorID, MotorType.kBrushless);
   private final RelativeEncoder elevatorEncoder = m_Elevator.getEncoder(); 
-    
+
   private double m_ElevatorSpeed; 
   private double m_ElevatorPosition; // max: 57.643550872802734
   private double m_ElevatorVelocity;
   /** Creates a new Elevator. */
   public Elevator() {// this is a constructer we added
     m_Elevator.getEncoder().setPosition(0);
-    
   }
-
-  /*
-  Goals:
-  - Prevent elevator from slamming to top and bottom.
-  - Prevent elevator from sliding down.
-  - Set software elevator height limit. Instead of hardware.
-  - (Stretch Goal): Have set height points for elevator mapped to a button
-
-  bool movingBool = false;
-  int heightVariable;
-
-  set movingBool to true when controller stick is up/down
-
-  speed going up = 0.8
-  speed not touching anything = 0
-  speed going down = -0.4
-
-  if (m_ElevatorSpeed == 0 && movingBool == true) {
-    heightVariable = m_ElevatorPosition;
-    movingBool = false;
-  }
-  
-  if (m_ElevatorSpeed == 0) {
-    PID here
-    Example:
-    motorSpeed = (m_ElevatorPosition - heightVariable)*someConstant
-  }
-  */
 
   @Override
   public void periodic() {
@@ -111,5 +82,22 @@ public class Elevator extends SubsystemBase {
   public double getEncoder(){
     return elevatorEncoder.getPosition();
   }
+
+  public static double getElevatorPosition() {
+    return m_Elevator.getEncoder().getPosition();
+  }
+
+  // for NEWElevatorPID
+  public static void setmotor(Double output) {
+    m_Elevator.set(output);
+  }
+
+  public void elevatorCancel(boolean isItTrue){
+    ElevatorPID.isCancelHeld = isItTrue;
+  }
+
+  public Command elevatorCancelCommand(){
+    return new StartEndCommand(() -> this.elevatorCancel(true), () -> this.elevatorCancel(false), this);
+  }// since you have to hold down the button unless you have robot timing it will work because it will be true long enough for the PID to end.
 
 }
