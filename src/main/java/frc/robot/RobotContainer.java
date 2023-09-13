@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.ElevatorPID;
 import frc.robot.commands.PlayOneCube;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
@@ -47,10 +48,6 @@ public class RobotContainer {
     Commands.run(
       () ->
           m_Drivetrain.OurDrive(m_driverController.getLeftY(), m_driverController.getRightX()),m_Drivetrain));
-
-
-
-    
   }
 
   /**
@@ -69,7 +66,7 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    //m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
     m_coDriverController.povUp().whileTrue(m_Elevator.elevatorForwardCommand(Constants.SpeedConstants.kUpElevatorSpeed));
     m_coDriverController.povDown().whileTrue(m_Elevator.elevatorBackwordsCommand(Constants.SpeedConstants.kDownElevatorSpeed));
@@ -79,6 +76,16 @@ public class RobotContainer {
 
     m_coDriverController.rightTrigger().whileTrue(m_Claw.clawShiftRightCommand(Constants.SpeedConstants.kClawShiftSpeed));
     m_coDriverController.leftTrigger().whileTrue(m_Claw.clawShiftLeftCommand(Constants.SpeedConstants.kClawShiftSpeed));
+
+    // PID values
+    m_coDriverController.a().toggleOnTrue(new ElevatorPID(m_Elevator,5.00));
+    m_coDriverController.b().toggleOnTrue(new ElevatorPID(m_Elevator,30.00));
+    m_coDriverController.y().toggleOnTrue(new ElevatorPID(m_Elevator,50.00));
+    // make the button automatic so you can do: A->Y->B. Without pressing a button to disable/enable PID
+    // make it so the elevator doesn't slowly creep down as well
+    // have manual control locked behind a toggle button that also toggles off PID
+    m_coDriverController.x().whileTrue(m_Elevator.elevatorCancelCommand());
+    //m_coDriverController.povLeft().toggleOnTrue(m_Elevator.elevatorCancelCommand2());
   }
 
   /**
