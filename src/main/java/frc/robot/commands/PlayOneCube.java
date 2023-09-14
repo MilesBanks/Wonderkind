@@ -6,18 +6,19 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.Claw;
-//import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 
 
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class PlayOneCube extends SequentialCommandGroup {
-  public PlayOneCube(Elevator m_Elevator, Claw m_Claw) {
+  public PlayOneCube(Drivetrain m_Drivetrain, Elevator m_Elevator, Claw m_Claw) {
     addCommands(
       m_Claw.clawCloseCommand(0.35).withTimeout(1),
       m_Elevator.elevatorForwardCommand(0.2).withTimeout(4),
       m_Claw.clawOpenCommand(0.35).withTimeout(1),
-      m_Elevator.elevatorBackwordsCommand(0.2).withTimeout(2)
-    );
+      m_Elevator.elevatorBackwordsCommand(0.2).withTimeout(2),
+      m_Drivetrain.driveBackwardCommand(.5).withTimeout(1)
+      );
   }
 }

@@ -18,7 +18,7 @@ import frc.robot.commands.ElevatorPID;
 
 public class Elevator extends SubsystemBase {
 
-  private static CANSparkMax m_Elevator = new CANSparkMax(Constants.CAN_ID_Constants.kElevatorMotorID, MotorType.kBrushless);
+  private final static CANSparkMax m_Elevator = new CANSparkMax(Constants.CAN_ID_Constants.kElevatorMotorID, MotorType.kBrushless);
   private final RelativeEncoder elevatorEncoder = m_Elevator.getEncoder(); 
 
   private double m_ElevatorSpeed; 

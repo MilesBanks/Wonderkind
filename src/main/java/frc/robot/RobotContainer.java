@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
+import frc.robot.commands.DrivetrainPID;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.ElevatorPID;
 import frc.robot.commands.PlayOneCube;
@@ -78,14 +79,16 @@ public class RobotContainer {
     m_coDriverController.leftTrigger().whileTrue(m_Claw.clawShiftLeftCommand(Constants.SpeedConstants.kClawShiftSpeed));
 
     // PID values
-    m_coDriverController.a().toggleOnTrue(new ElevatorPID(m_Elevator,5.00));
-    m_coDriverController.b().toggleOnTrue(new ElevatorPID(m_Elevator,30.00));
-    m_coDriverController.y().toggleOnTrue(new ElevatorPID(m_Elevator,50.00));
+    m_coDriverController.a().toggleOnTrue(new ElevatorPID(5.00));
+    m_coDriverController.b().toggleOnTrue(new ElevatorPID(30.00));
+    m_coDriverController.y().toggleOnTrue(new ElevatorPID(50.00));
     // make the button automatic so you can do: A->Y->B. Without pressing a button to disable/enable PID
     // make it so the elevator doesn't slowly creep down as well
     // have manual control locked behind a toggle button that also toggles off PID
     m_coDriverController.x().whileTrue(m_Elevator.elevatorCancelCommand());
-    //m_coDriverController.povLeft().toggleOnTrue(m_Elevator.elevatorCancelCommand2());
+
+    m_coDriverController.povRight().toggleOnTrue(new DrivetrainPID(10.00)); // robot moves to position 10. PID active forever
+    m_coDriverController.povLeft().whileTrue(m_Drivetrain.cancelDrivePIDCommand()); // cancels PID
   }
 
   /**
@@ -95,7 +98,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return new PlayOneCube(m_Elevator, m_Claw);
-
+    return new PlayOneCube(m_Drivetrain, m_Elevator, m_Claw);
   }
 }
