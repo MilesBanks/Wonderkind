@@ -18,7 +18,7 @@ public class DrivetrainProfiledPID extends ProfiledPIDSubsystem {
             0,
             0,
             // The motion profile constraints
-            new TrapezoidProfile.Constraints(200, 50)));
+            new TrapezoidProfile.Constraints(200, 100)));
   }
 
   // Example of creating new object of class

@@ -44,7 +44,7 @@ public class PlayOneCube extends SequentialCommandGroup {
       // Back up past dock
       Commands.runOnce(
         () -> {
-          m_DrivetrainProfiledPID.setGoal(-80.00);
+          m_DrivetrainProfiledPID.setGoal(-40.00);
           m_DrivetrainProfiledPID.enable();
         },
         m_Drivetrain),
@@ -53,7 +53,7 @@ public class PlayOneCube extends SequentialCommandGroup {
       // Drive forward and end on balance dock
       Commands.runOnce(
         () -> {
-          m_DrivetrainProfiledPID.setGoal(-40.00);
+          m_DrivetrainProfiledPID.setGoal(-20.00);
           m_DrivetrainProfiledPID.enable();
         },
         m_Drivetrain),
