@@ -5,15 +5,13 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
-import frc.robot.commands.DrivetrainPID;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.commands.ElevatorPID;
+import frc.robot.commands.GrabAndGo;
 import frc.robot.commands.PlayOneCube;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.DrivetrainProfiledPID;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.ElevatorProfiledPID;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -28,18 +26,22 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final Drivetrain m_Drivetrain = new Drivetrain();
   private final Claw m_Claw = new Claw();
   private final Elevator m_Elevator = new Elevator();
 
+  // Declare ElevatorProfiledPID and DrivetrainProfiledPID
+  // Only public and static so Robot.java can access it to disable the PID controllers
+  // When the robot switches form auton to teleop
+  public static ElevatorProfiledPID m_ElevatorProfiledPID = new ElevatorProfiledPID();
+  public static DrivetrainProfiledPID m_DrivetrainProfiledPID = new DrivetrainProfiledPID();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
   private final CommandXboxController m_coDriverController =
       new CommandXboxController(Constants.OperatorConstants.kCoDriverControllerPort);
-
+    
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
@@ -48,7 +50,7 @@ public class RobotContainer {
     m_Drivetrain.setDefaultCommand(
     Commands.run(
       () ->
-          m_Drivetrain.OurDrive(m_driverController.getLeftY(), m_driverController.getRightX()),m_Drivetrain));
+          m_Drivetrain.OurDrive(m_driverController.getLeftY(), m_driverController.getRightX(), Elevator.slowMow), m_Drivetrain));
   }
 
   /**
@@ -61,10 +63,6 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
-
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     //m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
@@ -77,18 +75,42 @@ public class RobotContainer {
 
     m_coDriverController.rightTrigger().whileTrue(m_Claw.clawShiftRightCommand(Constants.SpeedConstants.kClawShiftSpeed));
     m_coDriverController.leftTrigger().whileTrue(m_Claw.clawShiftLeftCommand(Constants.SpeedConstants.kClawShiftSpeed));
+    
+    // Each button changes setGoal of the instance of class ElevatorProfiledPID we defined earlier
+    // instead of making a new ElevatorPID object, change position of the single object
+    m_coDriverController.a().onTrue(Commands.runOnce(
+      () -> {
+        m_ElevatorProfiledPID.setGoal(1.00);
+        m_ElevatorProfiledPID.enable();
+      },
+      m_Elevator));
+    m_coDriverController.b().onTrue(Commands.runOnce(
+      () -> {
+        m_ElevatorProfiledPID.setGoal(41.50);
+        m_ElevatorProfiledPID.enable();
+      },
+      m_Elevator));
+    m_coDriverController.x().onTrue(Commands.runOnce(
+      () -> {
+        m_ElevatorProfiledPID.setGoal(36.00);
+        m_ElevatorProfiledPID.enable();
+      },
+      m_Elevator));
+    m_coDriverController.y().onTrue(Commands.runOnce(
+      () -> {
+        m_ElevatorProfiledPID.setGoal(57.50);
+        m_ElevatorProfiledPID.enable();
+      },
+      m_Elevator));
+    
+    // Button 7 disables PID for manual elevator input
+    m_coDriverController.button(7).onTrue(Commands.runOnce(
+      () -> {
+        m_ElevatorProfiledPID.disable();
+      },
+      m_Elevator));
 
-    // PID values
-    m_coDriverController.a().toggleOnTrue(new ElevatorPID(5.00));
-    m_coDriverController.b().toggleOnTrue(new ElevatorPID(30.00));
-    m_coDriverController.y().toggleOnTrue(new ElevatorPID(50.00));
-    // make the button automatic so you can do: A->Y->B. Without pressing a button to disable/enable PID
-    // make it so the elevator doesn't slowly creep down as well
-    // have manual control locked behind a toggle button that also toggles off PID
-    m_coDriverController.x().whileTrue(m_Elevator.elevatorCancelCommand());
-
-    m_coDriverController.povRight().toggleOnTrue(new DrivetrainPID(10.00)); // robot moves to position 10. PID active forever
-    m_coDriverController.povLeft().whileTrue(m_Drivetrain.cancelDrivePIDCommand()); // cancels PID
+    m_coDriverController.povLeft().onTrue(new GrabAndGo(m_Drivetrain, m_Elevator, m_Claw, m_ElevatorProfiledPID));
   }
 
   /**
@@ -98,6 +120,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return new PlayOneCube(m_Drivetrain, m_Elevator, m_Claw);
+    return new PlayOneCube(m_Drivetrain, m_Elevator, m_Claw, m_ElevatorProfiledPID, m_DrivetrainProfiledPID);
   }
 }

@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants;
-import frc.robot.commands.ElevatorPID;
 
 public class Elevator extends SubsystemBase {
 
@@ -22,12 +21,14 @@ public class Elevator extends SubsystemBase {
   private final RelativeEncoder elevatorEncoder = m_Elevator.getEncoder(); 
 
   private double m_ElevatorSpeed; 
-  private double m_ElevatorPosition; // max: 57.643550872802734
+  private double m_ElevatorPosition; // max: 57.6 to 57.3
   private double m_ElevatorVelocity;
   /** Creates a new Elevator. */
   public Elevator() {// this is a constructer we added
     m_Elevator.getEncoder().setPosition(0);
   }
+
+  public static double slowMow = 1.0; // Divider for robot speed
 
   @Override
   public void periodic() {
@@ -39,7 +40,8 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putNumber(("Elevator Position"), m_ElevatorPosition);
     SmartDashboard.putNumber(("Elevator Velocity"), m_ElevatorVelocity);
     SmartDashboard.putNumber(("Elevator Speed"), m_ElevatorSpeed);
-   
+
+    slowMow = 1.0 + (m_ElevatorPosition/17);
   }
 
   public void elevatorForward(double speed, int position){
@@ -72,7 +74,6 @@ public class Elevator extends SubsystemBase {
 
   public Command elevatorBackwordsCommand(double speed){
     return new StartEndCommand(() -> this.elevatorBackwords(speed), () -> this.elevatorBackwords(0.0), this);
-
   }
 
   public void elevatorStop(){
@@ -91,13 +92,5 @@ public class Elevator extends SubsystemBase {
   public static void setmotor(Double output) {
     m_Elevator.set(output);
   }
-
-  public void elevatorCancel(boolean isItTrue){
-    ElevatorPID.isCancelHeld = isItTrue;
-  }
-
-  public Command elevatorCancelCommand(){
-    return new StartEndCommand(() -> this.elevatorCancel(true), () -> this.elevatorCancel(false), this);
-  }// since you have to hold down the button unless you have robot timing it will work because it will be true long enough for the PID to end.
 
 }

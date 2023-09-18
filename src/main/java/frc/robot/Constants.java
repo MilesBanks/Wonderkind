@@ -31,9 +31,9 @@ public final class Constants {
   public final class SpeedConstants {
     public static final double kUpElevatorSpeed = 0.8;
     public static final double kDownElevatorSpeed = 0.4;
-    public static final double kClawOpenSpeed = 0.2;
-    public static final double kClawCloseSpeed = 0.2;
-    public static final double kClawShiftSpeed = 0.2;
+    public static final double kClawOpenSpeed = 0.35;
+    public static final double kClawCloseSpeed = 0.35;
+    public static final double kClawShiftSpeed = 0.35;
     
 }
 }

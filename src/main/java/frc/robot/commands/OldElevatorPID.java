@@ -6,16 +6,14 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
-import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class ElevatorPID extends PIDCommand {
-  public static boolean isCancelHeld = false;
+public class OldElevatorPID extends PIDCommand {
   /** Creates a new NEWNEWElevatorPID. */
-  public ElevatorPID(double position) {
+  public OldElevatorPID(double position) {
     super(
         // The controller that the command will use
         new PIDController(0.05, 0, 0),
@@ -39,6 +37,6 @@ public class ElevatorPID extends PIDCommand {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return isCancelHeld; // false = keep PID on
+    return (Math.abs(getController().getPositionError()) < 0.5);
   }
 }

@@ -4,14 +4,10 @@
 
 package frc.robot.subsystems;
 
-import javax.swing.text.Position;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -19,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.commands.DrivetrainPID;
+import frc.robot.commands.OldDrivetrainPID;
 
 public class Drivetrain extends SubsystemBase {
   private final static CANSparkMax LeftFrontMotor = new CANSparkMax(Constants.CAN_ID_Constants.kLeftFrontMotorID, MotorType.kBrushless);
@@ -44,7 +40,6 @@ public class Drivetrain extends SubsystemBase {
   
   /** Creates a new Drivetrain. */
   public Drivetrain() {
-
     LeftMotorGroup.setInverted(true); // Invert left motor group
     RightMotorGroup.setInverted(false);
 
@@ -68,22 +63,25 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber(("rightMotor Velocity"), rightMotorVelocity);
     SmartDashboard.putNumber(("leftMotor Speed"), leftMotorSpeed);
     SmartDashboard.putNumber(("rightMotor Speed"), rightMotorSpeed);
+
+    Drive.feed(); // hacky fix?
   }
 
-    public void OurDrive(double FWD, double ROT){
-      Drive.arcadeDrive(FWD, ROT);
-    }
+  public void OurDrive(double FWD, double ROT, double slowMow){
+    Drive.arcadeDrive(FWD/slowMow, (ROT/1.5)/(slowMow/2));
+  }
 
     public void ResetEncoders(){
       leftRelativeEncoder.setPosition(0);
       righRelativeEncoder.setPosition(0);
     }
-    public void driveForwardCommand(double speed){
+    public void driveForward(double speed){
+      Drive.feed();
       LeftMotorGroup.set(speed);
       RightMotorGroup.set(speed);
     }
   
-    public Command driveForward(double speed){
+    public Command driveForwardCommand(double speed){
       return new StartEndCommand(() -> this.driveForward(speed), () -> this.driveForward(0.0), this);
     }
 
@@ -100,15 +98,15 @@ public class Drivetrain extends SubsystemBase {
       return (leftMotorPosition + rightMotorPosition)/2;
     }
 
-    public static void setmotor(Double output) {
+    public static void setmotor(double output) {
       LeftFrontMotor.set(output);
       RightFrontMotor.set(-output); // right speed has to be negative when not in rightmotorgroup
       LeftBackMotor.set(output);
       RightBackMotor.set(-output);
     }
 
-    public void cancelDrivePID(Boolean output) {
-      DrivetrainPID.stopDrivePID = output;
+    public void cancelDrivePID(boolean output) {
+      OldDrivetrainPID.stopDrivePID = output;
     }
 
     public Command cancelDrivePIDCommand() {
