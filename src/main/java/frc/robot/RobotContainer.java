@@ -5,11 +5,16 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.GrabAndGo;
-import frc.robot.commands.PlayOneCube;
+import frc.robot.commands.*;
+//import frc.robot.commands.GrabAndGo;
+//import frc.robot.commands.PlayOneCube;
+//import frc.robot.commands.PlayAndLeave;
+//import frc.robot.commands.PlayAndDock;
+//import frc.robot.commands.PlayLeaveAndDock;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.DrivetrainProfiledPID;
+import frc.robot.subsystems.DrivetrainProfiledPIDTest;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ElevatorProfiledPID;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -35,12 +40,13 @@ public class RobotContainer {
   // When the robot switches form auton to teleop
   public static ElevatorProfiledPID m_ElevatorProfiledPID = new ElevatorProfiledPID();
   public static DrivetrainProfiledPID m_DrivetrainProfiledPID = new DrivetrainProfiledPID();
+  public static DrivetrainProfiledPIDTest m_DrivetrainProfiledPIDTest = new DrivetrainProfiledPIDTest();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
   private final CommandXboxController m_coDriverController =
-      new CommandXboxController(Constants.OperatorConstants.kCoDriverControllerPort);
+      new CommandXboxController(OperatorConstants.kCoDriverControllerPort);
     
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -50,7 +56,7 @@ public class RobotContainer {
     m_Drivetrain.setDefaultCommand(
     Commands.run(
       () ->
-          m_Drivetrain.OurDrive(m_driverController.getLeftY(), m_driverController.getRightX(), Elevator.slowMow), m_Drivetrain));
+          m_Drivetrain.OurDrive(m_driverController.getLeftY(), m_driverController.getRightX(), Elevator.slowMo), m_Drivetrain));
   }
 
   /**
@@ -67,8 +73,8 @@ public class RobotContainer {
     // cancelling on release.
     //m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
-    m_coDriverController.povUp().whileTrue(m_Elevator.elevatorForwardCommand(Constants.SpeedConstants.kUpElevatorSpeed));
-    m_coDriverController.povDown().whileTrue(m_Elevator.elevatorBackwordsCommand(Constants.SpeedConstants.kDownElevatorSpeed));
+    m_coDriverController.povUp().whileTrue(m_Elevator.elevatorUpCommand(Constants.SpeedConstants.kUpElevatorSpeed));
+    m_coDriverController.povDown().whileTrue(m_Elevator.elevatorDownCommand(Constants.SpeedConstants.kDownElevatorSpeed));
 
     m_coDriverController.rightBumper().whileTrue(m_Claw.clawCloseCommand(Constants.SpeedConstants.kClawCloseSpeed));
     m_coDriverController.leftBumper().whileTrue(m_Claw.clawOpenCommand(Constants.SpeedConstants.kClawOpenSpeed)); 
@@ -121,5 +127,8 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     return new PlayOneCube(m_Drivetrain, m_Elevator, m_Claw, m_ElevatorProfiledPID, m_DrivetrainProfiledPID);
+    //return new PlayAndLeave(m_Drivetrain, m_Elevator, m_Claw, m_ElevatorProfiledPID, m_DrivetrainProfiledPIDTest);
+    //return new PlayAndDock(m_Drivetrain, m_Elevator, m_Claw, m_ElevatorProfiledPID, m_DrivetrainProfiledPID);
+    //return new PlayLeaveAndDock(m_Drivetrain, m_Elevator, m_Claw, m_ElevatorProfiledPID, m_DrivetrainProfiledPID);
   }
 }

@@ -24,11 +24,12 @@ public class Elevator extends SubsystemBase {
   private double m_ElevatorPosition; // max: 57.6 to 57.3
   private double m_ElevatorVelocity;
   /** Creates a new Elevator. */
-  public Elevator() {// this is a constructer we added
+  public Elevator() {
+    // this is a constructer we added
     m_Elevator.getEncoder().setPosition(0);
   }
 
-  public static double slowMow = 1.0; // Divider for robot speed
+  public static double slowMo = 1.0; // Divider for robot speed
 
   @Override
   public void periodic() {
@@ -41,39 +42,39 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putNumber(("Elevator Velocity"), m_ElevatorVelocity);
     SmartDashboard.putNumber(("Elevator Speed"), m_ElevatorSpeed);
 
-    slowMow = 1.0 + (m_ElevatorPosition/17);
+    slowMo = 1.0 + (m_ElevatorPosition/17);
   }
 
-  public void elevatorForward(double speed, int position){
+  public void elevatorUp(double speed, int position){
     m_Elevator.set(speed);
       if (elevatorEncoder.getPosition() >= position)
         elevatorStop();
   }
 
-  public void elevatorForward(double speed){
+  public void elevatorUp(double speed){
     m_Elevator.set(speed);
   }
 
-  public Command elevatorForwardCommand(double speed){
-    return new StartEndCommand(() -> this.elevatorForward(speed), () -> this.elevatorForward(0), this);
+  public Command elevatorUpCommand(double speed){
+    return new StartEndCommand(() -> this.elevatorUp(speed), () -> this.elevatorUp(0), this);
   }
 
-  public void elevatorBackwords(double speed, int position){
+  public void elevatorDown(double speed, int position){
     m_Elevator.set(-speed);
       if (elevatorEncoder.getPosition() <= position)
         elevatorStop();
   }
 
   int slowThreshold = 15;
-  public void elevatorBackwords(double speed){
+  public void elevatorDown(double speed){
     if (m_ElevatorPosition <= slowThreshold) {
       m_Elevator.set(-m_ElevatorPosition*(1/(slowThreshold/Constants.SpeedConstants.kDownElevatorSpeed)));
     }
     else { m_Elevator.set(-speed); }
   }
 
-  public Command elevatorBackwordsCommand(double speed){
-    return new StartEndCommand(() -> this.elevatorBackwords(speed), () -> this.elevatorBackwords(0.0), this);
+  public Command elevatorDownCommand(double speed){
+    return new StartEndCommand(() -> this.elevatorDown(speed), () -> this.elevatorDown(0.0), this);
   }
 
   public void elevatorStop(){

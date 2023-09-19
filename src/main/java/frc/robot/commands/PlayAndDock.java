@@ -16,8 +16,8 @@ import frc.robot.subsystems.ElevatorProfiledPID;
 
 
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class PlayOneCube extends SequentialCommandGroup {
-  public PlayOneCube(Drivetrain m_Drivetrain, Elevator m_Elevator, Claw m_Claw, ElevatorProfiledPID m_ElevatorProfiledPID, DrivetrainProfiledPID m_DrivetrainProfiledPID) {
+public class PlayAndDock extends SequentialCommandGroup {
+  public PlayAndDock(Drivetrain m_Drivetrain, Elevator m_Elevator, Claw m_Claw, ElevatorProfiledPID m_ElevatorProfiledPID, DrivetrainProfiledPID m_DrivetrainProfiledPID) {
     addCommands(
       // Claw close
       m_Claw.clawShiftRightCommand(Constants.SpeedConstants.kClawShiftSpeed).withTimeout(1.00),

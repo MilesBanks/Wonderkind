@@ -10,14 +10,15 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.DrivetrainProfiledPID;
+//import frc.robot.subsystems.DrivetrainProfiledPID;
+import frc.robot.subsystems.DrivetrainProfiledPIDTest;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ElevatorProfiledPID;
 
 
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class PlayOneCube extends SequentialCommandGroup {
-  public PlayOneCube(Drivetrain m_Drivetrain, Elevator m_Elevator, Claw m_Claw, ElevatorProfiledPID m_ElevatorProfiledPID, DrivetrainProfiledPID m_DrivetrainProfiledPID) {
+public class PlayAndLeave extends SequentialCommandGroup {
+  public PlayAndLeave(Drivetrain m_Drivetrain, Elevator m_Elevator, Claw m_Claw, ElevatorProfiledPID m_ElevatorProfiledPID, DrivetrainProfiledPIDTest m_DrivetrainProfiledPIDTest) {
     addCommands(
       // Claw close
       m_Claw.clawShiftRightCommand(Constants.SpeedConstants.kClawShiftSpeed).withTimeout(1.00),
@@ -44,8 +45,8 @@ public class PlayOneCube extends SequentialCommandGroup {
       // Back up past dock
       Commands.runOnce(
         () -> {
-          m_DrivetrainProfiledPID.setGoal(-40.00);
-          m_DrivetrainProfiledPID.enable();
+          m_DrivetrainProfiledPIDTest.setGoal(-40.00);
+          m_DrivetrainProfiledPIDTest.enable();
         },
         m_Drivetrain),
       // Wait Buffer
@@ -53,8 +54,8 @@ public class PlayOneCube extends SequentialCommandGroup {
       // Drive forward and end on balance dock
       Commands.runOnce(
         () -> {
-          m_DrivetrainProfiledPID.setGoal(-20.00);
-          m_DrivetrainProfiledPID.enable();
+          m_DrivetrainProfiledPIDTest.setGoal(-20.00);
+          m_DrivetrainProfiledPIDTest.enable();
         },
         m_Drivetrain),
       // Wait Buffer

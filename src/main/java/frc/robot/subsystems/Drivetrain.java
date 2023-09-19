@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.commands.OldDrivetrainPID;
 
 public class Drivetrain extends SubsystemBase {
   private final static CANSparkMax LeftFrontMotor = new CANSparkMax(Constants.CAN_ID_Constants.kLeftFrontMotorID, MotorType.kBrushless);
@@ -43,6 +42,18 @@ public class Drivetrain extends SubsystemBase {
     LeftMotorGroup.setInverted(true); // Invert left motor group
     RightMotorGroup.setInverted(false);
 
+    //Can't we just invert encoders here instead of flipping them with negative signs down below?
+    //LeftFrontMotor.getEncoder().setInverted(true);
+    //RightFrontMotor.getEncoder().setInverted(false);
+
+    //Convert encoder postion from revolutions to Meters
+    LeftFrontMotor.getEncoder().setPositionConversionFactor(Constants.DrivetrainConstants.revToMeters);
+    RightFrontMotor.getEncoder().setPositionConversionFactor(Constants.DrivetrainConstants.revToMeters);
+
+    //Convert encoder velocity from RPM to Meters/second
+    LeftFrontMotor.getEncoder().setVelocityConversionFactor(Constants.DrivetrainConstants.RPMToMetersPerSec);
+    RightFrontMotor.getEncoder().setVelocityConversionFactor(Constants.DrivetrainConstants.RPMToMetersPerSec);
+
     LeftFrontMotor.getEncoder().setPosition(0); // Set default position = 0
     RightFrontMotor.getEncoder().setPosition(0);
   }
@@ -67,8 +78,8 @@ public class Drivetrain extends SubsystemBase {
     Drive.feed(); // hacky fix?
   }
 
-  public void OurDrive(double FWD, double ROT, double slowMow){
-    Drive.arcadeDrive(FWD/slowMow, (ROT/1.5)/(slowMow/2));
+  public void OurDrive(double FWD, double ROT, double slowMo){
+    Drive.arcadeDrive(FWD/slowMo, (ROT/1.5)/(slowMo/2));
   }
 
     public void ResetEncoders(){
@@ -76,7 +87,7 @@ public class Drivetrain extends SubsystemBase {
       righRelativeEncoder.setPosition(0);
     }
     public void driveForward(double speed){
-      Drive.feed();
+      Drive.feed(); //Do we need this here since it's in periodic?
       LeftMotorGroup.set(speed);
       RightMotorGroup.set(speed);
     }
@@ -105,12 +116,12 @@ public class Drivetrain extends SubsystemBase {
       RightBackMotor.set(-output);
     }
 
-    public void cancelDrivePID(boolean output) {
+    /*public void cancelDrivePID(boolean output) {
       OldDrivetrainPID.stopDrivePID = output;
     }
 
     public Command cancelDrivePIDCommand() {
       return new StartEndCommand(() -> this.cancelDrivePID(false), () -> this.cancelDrivePID(false), this);
     }
-    
+    */
 }
