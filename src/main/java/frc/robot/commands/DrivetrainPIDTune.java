@@ -7,19 +7,19 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.Constants;
-import frc.robot.subsystems.Claw;
+//import frc.robot.Constants;
+//import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.DrivetrainProfiledPID;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.ElevatorProfiledPID;
+//import frc.robot.subsystems.Elevator;
+//import frc.robot.subsystems.ElevatorProfiledPID;
 
 
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class PlayOneCube extends SequentialCommandGroup {
-  public PlayOneCube(Drivetrain m_Drivetrain, Elevator m_Elevator, Claw m_Claw, ElevatorProfiledPID m_ElevatorProfiledPID, DrivetrainProfiledPID m_DrivetrainProfiledPID) {
+public class DrivetrainPIDTune extends SequentialCommandGroup {
+  public DrivetrainPIDTune(Drivetrain m_Drivetrain, /*Elevator m_Elevator, Claw m_Claw, ElevatorProfiledPID m_ElevatorProfiledPID,*/ DrivetrainProfiledPID m_DrivetrainProfiledPID) {
     addCommands(
-      // Claw close
+      /*// Claw close
       m_Claw.clawShiftRightCommand(Constants.SpeedConstants.kClawShiftSpeed).withTimeout(1.00),
       // Elevator up
       Commands.runOnce(
@@ -40,20 +40,20 @@ public class PlayOneCube extends SequentialCommandGroup {
         },
         m_Elevator),
       // Wait Buffer
-      new WaitCommand(1.5),
+      new WaitCommand(1.5),*/
       // Back up past dock
       Commands.runOnce(
         () -> {
-          m_DrivetrainProfiledPID.setGoal(-40.00);
+          m_DrivetrainProfiledPID.setGoal(-4);
           m_DrivetrainProfiledPID.enable();
         },
         m_Drivetrain),
       // Wait Buffer
-      new WaitCommand(6.0),
+      new WaitCommand(3.0),
       // Drive forward and end on balance dock
       Commands.runOnce(
         () -> {
-          m_DrivetrainProfiledPID.setGoal(-20.00);
+          m_DrivetrainProfiledPID.setGoal(-0.5);
           m_DrivetrainProfiledPID.enable();
         },
         m_Drivetrain),

@@ -14,11 +14,11 @@ public class DrivetrainProfiledPID extends ProfiledPIDSubsystem {
     super(
         // The ProfiledPIDController used by the subsystem
         new ProfiledPIDController(
-            0.1,
+            0.6,
             0,
             0,
             // The motion profile constraints
-            new TrapezoidProfile.Constraints(200, 100)));
+            new TrapezoidProfile.Constraints(3, 8)));
   }
 
   // Example of creating new object of class

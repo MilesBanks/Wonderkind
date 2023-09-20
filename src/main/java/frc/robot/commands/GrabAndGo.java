@@ -18,10 +18,10 @@ import frc.robot.subsystems.ElevatorProfiledPID;
 public class GrabAndGo extends SequentialCommandGroup {
   public GrabAndGo(Drivetrain m_Drivetrain, Elevator m_Elevator, Claw m_Claw, ElevatorProfiledPID m_ElevatorProfiledPID) {
     addCommands(
-      // Remove Driver Input
+      // Remove driver input
       m_Drivetrain.driveForwardCommand(0).withTimeout(0.1),
       // Grab cone
-      m_Claw.clawShiftRightCommand(Constants.SpeedConstants.kClawShiftSpeed).withTimeout(1.00),
+      m_Claw.clawShiftRightCommand(Constants.SpeedConstants.kClawShiftSpeed).withTimeout(1.50),
       // Lift cone up
       Commands.runOnce(
         () -> {
@@ -29,11 +29,11 @@ public class GrabAndGo extends SequentialCommandGroup {
           m_ElevatorProfiledPID.enable();
         },
         m_Elevator),
-      // Wait Buffer
+      // Wait buffer
       new WaitCommand(0.5),
-      // Drive Back
+      // Drive back
       m_Drivetrain.driveForwardCommand(0.25).withTimeout(0.5),
-      // Arm Down
+      // Arm down
       Commands.runOnce(
         () -> {
           m_ElevatorProfiledPID.setGoal(1.0);

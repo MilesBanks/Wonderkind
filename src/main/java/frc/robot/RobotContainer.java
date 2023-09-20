@@ -14,7 +14,6 @@ import frc.robot.commands.*;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.DrivetrainProfiledPID;
-import frc.robot.subsystems.DrivetrainProfiledPIDTest;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ElevatorProfiledPID;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -40,7 +39,6 @@ public class RobotContainer {
   // When the robot switches form auton to teleop
   public static ElevatorProfiledPID m_ElevatorProfiledPID = new ElevatorProfiledPID();
   public static DrivetrainProfiledPID m_DrivetrainProfiledPID = new DrivetrainProfiledPID();
-  public static DrivetrainProfiledPIDTest m_DrivetrainProfiledPIDTest = new DrivetrainProfiledPIDTest();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -125,10 +123,9 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return new PlayOneCube(m_Drivetrain, m_Elevator, m_Claw, m_ElevatorProfiledPID, m_DrivetrainProfiledPID);
-    //return new PlayAndLeave(m_Drivetrain, m_Elevator, m_Claw, m_ElevatorProfiledPID, m_DrivetrainProfiledPIDTest);
+    //return new DrivetrainPIDTune(m_Drivetrain, /*m_Elevator, m_Claw, m_ElevatorProfiledPID,*/ m_DrivetrainProfiledPID);
+    //return new PlayAndLeave(m_Drivetrain, m_Elevator, m_Claw, m_ElevatorProfiledPID, m_DrivetrainProfiledPID);
     //return new PlayAndDock(m_Drivetrain, m_Elevator, m_Claw, m_ElevatorProfiledPID, m_DrivetrainProfiledPID);
-    //return new PlayLeaveAndDock(m_Drivetrain, m_Elevator, m_Claw, m_ElevatorProfiledPID, m_DrivetrainProfiledPID);
+    return new PlayLeaveAndDock(m_Drivetrain, m_Elevator, m_Claw, m_ElevatorProfiledPID, m_DrivetrainProfiledPID);
   }
 }

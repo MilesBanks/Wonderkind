@@ -42,7 +42,7 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putNumber(("Elevator Velocity"), m_ElevatorVelocity);
     SmartDashboard.putNumber(("Elevator Speed"), m_ElevatorSpeed);
 
-    slowMo = 1.0 + (m_ElevatorPosition/17);
+    slowMo = 1.0 + (m_ElevatorPosition/23);
   }
 
   public void elevatorUp(double speed, int position){
@@ -52,7 +52,7 @@ public class Elevator extends SubsystemBase {
   }
 
   public void elevatorUp(double speed){
-    m_Elevator.set(speed);
+    m_Elevator.set(Constants.SpeedConstants.kUpElevatorSpeed);
   }
 
   public Command elevatorUpCommand(double speed){
@@ -65,12 +65,8 @@ public class Elevator extends SubsystemBase {
         elevatorStop();
   }
 
-  int slowThreshold = 15;
   public void elevatorDown(double speed){
-    if (m_ElevatorPosition <= slowThreshold) {
-      m_Elevator.set(-m_ElevatorPosition*(1/(slowThreshold/Constants.SpeedConstants.kDownElevatorSpeed)));
-    }
-    else { m_Elevator.set(-speed); }
+    m_Elevator.set(-Constants.SpeedConstants.kDownElevatorSpeed);
   }
 
   public Command elevatorDownCommand(double speed){

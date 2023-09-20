@@ -28,7 +28,7 @@ public class PlayAndDock extends SequentialCommandGroup {
           m_ElevatorProfiledPID.enable();
         },
         m_Elevator),
-      // Wait Buffer
+      // Wait buffer
       new WaitCommand(1.5),
       // Claw open
       m_Claw.clawShiftLeftCommand(Constants.SpeedConstants.kClawShiftSpeed).withTimeout(1.00),
@@ -39,26 +39,12 @@ public class PlayAndDock extends SequentialCommandGroup {
           m_ElevatorProfiledPID.enable();
         },
         m_Elevator),
-      // Wait Buffer
+      // Wait buffer
       new WaitCommand(1.5),
-      // Back up past dock
-      Commands.runOnce(
-        () -> {
-          m_DrivetrainProfiledPID.setGoal(-40.00);
-          m_DrivetrainProfiledPID.enable();
-        },
-        m_Drivetrain),
-      // Wait Buffer
-      new WaitCommand(6.0),
-      // Drive forward and end on balance dock
-      Commands.runOnce(
-        () -> {
-          m_DrivetrainProfiledPID.setGoal(-20.00);
-          m_DrivetrainProfiledPID.enable();
-        },
-        m_Drivetrain),
-      // Wait Buffer
-      new WaitCommand(3.0)
+      // Drive backwards and dock
+      m_Drivetrain.driveBackwardCommand(0.3).withTimeout(1.75),
+      // Wait buffer
+      new WaitCommand(1.0)
       );
   }
 }

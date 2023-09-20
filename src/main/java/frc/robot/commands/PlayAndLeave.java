@@ -10,15 +10,14 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
-//import frc.robot.subsystems.DrivetrainProfiledPID;
-import frc.robot.subsystems.DrivetrainProfiledPIDTest;
+import frc.robot.subsystems.DrivetrainProfiledPID;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ElevatorProfiledPID;
 
 
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class PlayAndLeave extends SequentialCommandGroup {
-  public PlayAndLeave(Drivetrain m_Drivetrain, Elevator m_Elevator, Claw m_Claw, ElevatorProfiledPID m_ElevatorProfiledPID, DrivetrainProfiledPIDTest m_DrivetrainProfiledPIDTest) {
+  public PlayAndLeave(Drivetrain m_Drivetrain, Elevator m_Elevator, Claw m_Claw, ElevatorProfiledPID m_ElevatorProfiledPID, DrivetrainProfiledPID m_DrivetrainProfiledPID) {
     addCommands(
       // Claw close
       m_Claw.clawShiftRightCommand(Constants.SpeedConstants.kClawShiftSpeed).withTimeout(1.00),
@@ -29,7 +28,7 @@ public class PlayAndLeave extends SequentialCommandGroup {
           m_ElevatorProfiledPID.enable();
         },
         m_Elevator),
-      // Wait Buffer
+      // Wait buffer
       new WaitCommand(1.5),
       // Claw open
       m_Claw.clawShiftLeftCommand(Constants.SpeedConstants.kClawShiftSpeed).withTimeout(1.00),
@@ -40,26 +39,12 @@ public class PlayAndLeave extends SequentialCommandGroup {
           m_ElevatorProfiledPID.enable();
         },
         m_Elevator),
-      // Wait Buffer
+      // Wait buffer
       new WaitCommand(1.5),
-      // Back up past dock
-      Commands.runOnce(
-        () -> {
-          m_DrivetrainProfiledPIDTest.setGoal(-40.00);
-          m_DrivetrainProfiledPIDTest.enable();
-        },
-        m_Drivetrain),
-      // Wait Buffer
-      new WaitCommand(6.0),
-      // Drive forward and end on balance dock
-      Commands.runOnce(
-        () -> {
-          m_DrivetrainProfiledPIDTest.setGoal(-20.00);
-          m_DrivetrainProfiledPIDTest.enable();
-        },
-        m_Drivetrain),
-      // Wait Buffer
-      new WaitCommand(3.0)
+      // Back up past red line
+      m_Drivetrain.driveForwardCommand(0.6).withTimeout(2),
+      // Wait buffer
+      new WaitCommand(1.0)
       );
   }
 }
