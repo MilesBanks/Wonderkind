@@ -10,36 +10,41 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.DrivetrainProfiledPID;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ElevatorProfiledPID;
 
 
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class GrabAndGo extends SequentialCommandGroup {
-  public GrabAndGo(Drivetrain m_Drivetrain, Elevator m_Elevator, Claw m_Claw, ElevatorProfiledPID m_ElevatorProfiledPID) {
+public class PlayAndDock extends SequentialCommandGroup {
+  public PlayAndDock(Drivetrain m_Drivetrain, Elevator m_Elevator, Claw m_Claw, ElevatorProfiledPID m_ElevatorProfiledPID, DrivetrainProfiledPID m_DrivetrainProfiledPID) {
     addCommands(
-      // Remove driver input
-      m_Drivetrain.driveForwardCommand(0).withTimeout(0.1),
-      // Grab cone
-      m_Claw.clawShiftRightCommand(Constants.SpeedConstants.kClawShiftSpeed).withTimeout(1.50),
-      // Lift cone up
+      // Claw close
+      m_Claw.clawShiftRightCommand(Constants.SpeedConstants.kClawShiftSpeed).withTimeout(1.00),
+      // Elevator up
       Commands.runOnce(
         () -> {
-          m_ElevatorProfiledPID.setGoal(42.00);
+          m_ElevatorProfiledPID.setGoal(57.50);
           m_ElevatorProfiledPID.enable();
         },
         m_Elevator),
       // Wait buffer
-      new WaitCommand(0.5),
-      // Drive back
-      m_Drivetrain.driveForwardCommand(0.25).withTimeout(0.5),
-      // Arm down
+      new WaitCommand(1.5),
+      // Claw open
+      m_Claw.clawShiftLeftCommand(Constants.SpeedConstants.kClawShiftSpeed).withTimeout(1.00),
+      // Elevator down
       Commands.runOnce(
         () -> {
-          m_ElevatorProfiledPID.setGoal(1.0);
+          m_ElevatorProfiledPID.setGoal(1.00);
           m_ElevatorProfiledPID.enable();
         },
-        m_Elevator)
+        m_Elevator),
+      // Wait buffer
+      new WaitCommand(1.5),
+      // Drive backwards and dock
+      m_Drivetrain.driveBackwardCommand(0.3).withTimeout(1.75),
+      // Wait buffer
+      new WaitCommand(1.0)
       );
   }
 }

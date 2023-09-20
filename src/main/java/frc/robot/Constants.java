@@ -36,4 +36,13 @@ public final class Constants {
     public static final double kClawShiftSpeed = 0.35;
     
 }
+
+public final class DrivetrainConstants {
+
+  public static final double wheelDiameter = 0.1524; //in Meters
+  public static final double gearboxRatio = 12.75;
+  public static final double revToMeters = (1/gearboxRatio)*(Math.PI*wheelDiameter); //convert motor revolutions to distance in Meters
+  public static final double RPMToMetersPerSec = revToMeters/60; //convert motor revolutions per minute to Meters per second
+  
+}
 }
