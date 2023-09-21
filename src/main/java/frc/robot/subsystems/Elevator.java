@@ -29,7 +29,8 @@ public class Elevator extends SubsystemBase {
     m_Elevator.getEncoder().setPosition(0);
   }
 
-  public static double slowMo = 1.0; // Divider for robot speed
+  public static double slowMo = 1.0;          // Divider for robot speed
+  public static double rotationSlowMo = 1.0;  // Divider for rotation speed
 
   @Override
   public void periodic() {
@@ -42,43 +43,47 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putNumber(("Elevator Velocity"), m_ElevatorVelocity);
     SmartDashboard.putNumber(("Elevator Speed"), m_ElevatorSpeed);
 
-    slowMo = 1.0 + (m_ElevatorPosition/23);
+    //slowMo = 1.0 + (m_ElevatorPosition/23);
+    if (m_ElevatorPosition > 0) {
+      rotationSlowMo = 1.0 + (m_ElevatorPosition/40);
+      slowMo = 1.0 + (Math.pow(m_ElevatorPosition, 1.50)/173);
+    }
   }
 
-  public void elevatorUp(double speed, int position){
+  public void elevatorUp(double speed) {
     m_Elevator.set(speed);
-      if (elevatorEncoder.getPosition() >= position)
-        elevatorStop();
   }
 
-  public void elevatorUp(double speed){
-    m_Elevator.set(Constants.SpeedConstants.kUpElevatorSpeed);
+  public Command elevatorUpCommand(double speed) {
+    return new StartEndCommand(() -> this.elevatorUp(speed), () -> this.elevatorDown(0.0), this);
   }
 
-  public Command elevatorUpCommand(double speed){
-    return new StartEndCommand(() -> this.elevatorUp(speed), () -> this.elevatorUp(0), this);
-  }
-
-  public void elevatorDown(double speed, int position){
+  public void elevatorDown(double speed) {
     m_Elevator.set(-speed);
-      if (elevatorEncoder.getPosition() <= position)
-        elevatorStop();
   }
 
-  public void elevatorDown(double speed){
-    m_Elevator.set(-Constants.SpeedConstants.kDownElevatorSpeed);
-  }
-
-  public Command elevatorDownCommand(double speed){
+  public Command elevatorDownCommand(double speed) {
     return new StartEndCommand(() -> this.elevatorDown(speed), () -> this.elevatorDown(0.0), this);
   }
 
-  public void elevatorStop(){
-    m_Elevator.set(0);
+  public double elevatorBottom(double speed) {
+    if (elevatorEncoder.getPosition() <= 7.5) {
+      m_Elevator.set(-speed/4);
+    }
+    else if (elevatorEncoder.getPosition() <= 15.0) {
+      m_Elevator.set(-speed/2);
+    }
+    else {
+      m_Elevator.set(-speed);
+    }
+    if (elevatorEncoder.getPosition() <= 2.0) {
+      elevatorStop();
+    }
+    return elevatorEncoder.getPosition();
   }
 
-  public double getEncoder(){
-    return elevatorEncoder.getPosition();
+  public void elevatorStop() {
+    m_Elevator.set(0);
   }
 
   public static double getElevatorPosition() {

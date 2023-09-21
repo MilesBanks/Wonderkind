@@ -9,20 +9,17 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 
 public class DrivetrainProfiledPID extends ProfiledPIDSubsystem {
-  /** Creates a new DrivetrainProfiledPID. */
+  /** Creates a new ProfiledPID. */
   public DrivetrainProfiledPID() {
     super(
-        // The ProfiledPIDController used by the subsystem
-        new ProfiledPIDController(
-            0.6,
-            0,
-            0,
-            // The motion profile constraints
-            new TrapezoidProfile.Constraints(3, 8)));
+      // The ProfiledPIDController used by the subsystem
+      new ProfiledPIDController(
+        0.6,
+        0,
+        0,
+        // The motion profile constraints
+        new TrapezoidProfile.Constraints(3, 8)));
   }
-
-  // Example of creating new object of class
-  //private Drivetrain newobject = new Drivetrain();
 
   @Override
   public void useOutput(double output, TrapezoidProfile.State setpoint) {
@@ -34,6 +31,5 @@ public class DrivetrainProfiledPID extends ProfiledPIDSubsystem {
   public double getMeasurement() {
     // Return the process variable measurement here
     return Drivetrain.getDrivetrainPosition();
-    //return 0;
   }
 }

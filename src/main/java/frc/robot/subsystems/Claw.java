@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Claw extends SubsystemBase {
+
   private final CANSparkMax m_ClawLeft = new CANSparkMax(Constants.CAN_ID_Constants.kLeftClawMotorID, MotorType.kBrushless);
   private final CANSparkMax m_ClawRight = new CANSparkMax(Constants.CAN_ID_Constants.kRightClawMotorID, MotorType.kBrushless); 
   private double m_ClawLeftPosition;
@@ -22,11 +23,11 @@ public class Claw extends SubsystemBase {
   private double m_ClawRightSpeed;
   private double m_ClawLeftVelocity;
   private double m_ClawRightVelocity;
+
   /** Creates a new Claw. */
   public Claw() {
     m_ClawLeft.getEncoder().setPosition(0);
     m_ClawRight.getEncoder().setPosition(0);
-
   }   
 
   @Override
@@ -39,13 +40,13 @@ public class Claw extends SubsystemBase {
     m_ClawLeftVelocity = m_ClawLeft.getEncoder().getVelocity();
     m_ClawRightVelocity = m_ClawRight.getEncoder().getVelocity();
 
-    if(getEncoders()[0]  <=0){
-      if(m_ClawLeft.get() < 0)
+    if(m_ClawLeftPosition <= 0.5){
+      if(m_ClawLeftSpeed < 0)
         m_ClawLeft.set(0);
     }
 
-    if(getEncoders()[1] <=0) {
-      if(m_ClawRight.get()<0)
+    if(m_ClawRightPosition <= 0.5) {
+      if(m_ClawRightSpeed < 0)
         m_ClawRight.set(0);
     }
 
@@ -55,7 +56,6 @@ public class Claw extends SubsystemBase {
     SmartDashboard.putNumber(("Right Claw Velocity"), m_ClawRightVelocity);
     SmartDashboard.putNumber(("Left Claw Speed"), m_ClawLeftSpeed);
     SmartDashboard.putNumber(("Right Claw Speed"), m_ClawRightSpeed);
-    
   
     if (m_ClawLeftPosition + m_ClawRightPosition >= 88 ){
       if (m_ClawLeftSpeed + m_ClawRightSpeed >= Constants.SpeedConstants.kClawCloseSpeed) {
@@ -63,8 +63,8 @@ public class Claw extends SubsystemBase {
         m_ClawRight.set(0);
       }
     }
-
   }
+
   public void clawClose(double speed){
     m_ClawLeft.set(-speed);
     m_ClawRight.set(speed);
@@ -100,18 +100,18 @@ public class Claw extends SubsystemBase {
   public Command clawShiftLeftCommand(double speed){
     return new StartEndCommand(() -> this.clawShiftLeft(speed), () -> this.clawShiftLeft(0.0), this);
   }
+
   public void clawStop(){
     m_ClawLeft.set(0);
     m_ClawRight.set(0);
   }
+
   public double[] getEncoders(){
     return new double[]{m_ClawLeft.getEncoder().getPosition(), m_ClawRight.getEncoder().getPosition()};
   }
+
   public double[] getCurrents(){
     return new double[]{m_ClawLeft.getOutputCurrent(), m_ClawRight.getOutputCurrent()};
   }
   
-  }
-  
-
-
+}

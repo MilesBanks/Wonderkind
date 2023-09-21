@@ -28,21 +28,19 @@ public final class Constants {
     public static final int kLeftClawMotorID = 6;
     public static final int kRightClawMotorID = 8;
   }
+
   public final class SpeedConstants {
-    public static final double kUpElevatorSpeed = 0.8;
-    public static final double kDownElevatorSpeed = 0.4;
+    public static final double kUpElevatorSpeed = 0.3;
+    public static final double kDownElevatorSpeed = 0.15;
     public static final double kClawOpenSpeed = 0.35;
     public static final double kClawCloseSpeed = 0.35;
     public static final double kClawShiftSpeed = 0.35;
-    
-}
+  }
 
-public final class DrivetrainConstants {
-
-  public static final double wheelDiameter = 0.1524; //in Meters
-  public static final double gearboxRatio = 12.75;
-  public static final double revToMeters = (1/gearboxRatio)*(Math.PI*wheelDiameter); //convert motor revolutions to distance in Meters
-  public static final double RPMToMetersPerSec = revToMeters/60; //convert motor revolutions per minute to Meters per second
-  
-}
+  public final class DrivetrainConstants {
+    public static final double wheelDiameter = 0.1524; //in Meters
+    public static final double gearboxRatio = 12.75;
+    public static final double revToMeters = (1/gearboxRatio)*(Math.PI*wheelDiameter); //convert motor revolutions to distance in Meters
+    public static final double RPMToMetersPerSec = revToMeters/60; //convert motor revolutions per minute to Meters per second
+  }
 }

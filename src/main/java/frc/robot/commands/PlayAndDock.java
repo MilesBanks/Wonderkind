@@ -14,7 +14,6 @@ import frc.robot.subsystems.DrivetrainProfiledPID;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ElevatorProfiledPID;
 
-
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class PlayAndDock extends SequentialCommandGroup {
   public PlayAndDock(Drivetrain m_Drivetrain, Elevator m_Elevator, Claw m_Claw, ElevatorProfiledPID m_ElevatorProfiledPID, DrivetrainProfiledPID m_DrivetrainProfiledPID) {

@@ -9,16 +9,16 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 
 public class ElevatorProfiledPID extends ProfiledPIDSubsystem {
-  /** Creates a new test. */
+  /** Creates a new ProfiledPID */
   public ElevatorProfiledPID() {
     super(
-        // The ProfiledPIDController used by the subsystem
-        new ProfiledPIDController(
-            0.1,
-            0,
-            0,
-            // The motion profile constraints
-            new TrapezoidProfile.Constraints(250, 150)));
+      // The ProfiledPIDController used by the subsystem
+      new ProfiledPIDController(
+        0.1,
+        0,
+        0,
+        // The motion profile constraints
+        new TrapezoidProfile.Constraints(250, 150)));
   }
 
   @Override
@@ -31,6 +31,5 @@ public class ElevatorProfiledPID extends ProfiledPIDSubsystem {
   public double getMeasurement() {
     // Return the process variable measurement here
     return Elevator.getElevatorPosition();
-    //return 0;
   }
 }

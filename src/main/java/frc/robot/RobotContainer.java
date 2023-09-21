@@ -6,17 +6,11 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.*;
-//import frc.robot.commands.GrabAndGo;
-//import frc.robot.commands.PlayOneCube;
-//import frc.robot.commands.PlayAndLeave;
-//import frc.robot.commands.PlayAndDock;
-//import frc.robot.commands.PlayLeaveAndDock;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.DrivetrainProfiledPID;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ElevatorProfiledPID;
-//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -54,7 +48,7 @@ public class RobotContainer {
     m_Drivetrain.setDefaultCommand(
     Commands.run(
       () ->
-          m_Drivetrain.OurDrive(m_driverController.getLeftY(), m_driverController.getRightX(), Elevator.slowMo), m_Drivetrain));
+          m_Drivetrain.OurDrive(m_driverController.getLeftY(), m_driverController.getRightX(), Elevator.slowMo, Elevator.rotationSlowMo), m_Drivetrain));
   }
 
   /**
@@ -82,10 +76,10 @@ public class RobotContainer {
     
     // Each button changes setGoal of the instance of class ElevatorProfiledPID we defined earlier
     // instead of making a new ElevatorPID object, change position of the single object
-    m_coDriverController.a().onTrue(Commands.runOnce(
+    m_coDriverController.a().onTrue(Commands.run(
       () -> {
-        m_ElevatorProfiledPID.setGoal(1.00);
-        m_ElevatorProfiledPID.enable();
+        m_ElevatorProfiledPID.disable();
+        m_Elevator.elevatorBottom(0.50);
       },
       m_Elevator));
     m_coDriverController.b().onTrue(Commands.runOnce(
@@ -123,9 +117,9 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    //return new DrivetrainPIDTune(m_Drivetrain, /*m_Elevator, m_Claw, m_ElevatorProfiledPID,*/ m_DrivetrainProfiledPID);
-    //return new PlayAndLeave(m_Drivetrain, m_Elevator, m_Claw, m_ElevatorProfiledPID, m_DrivetrainProfiledPID);
+    return new PlayAndLeave(m_Drivetrain, m_Elevator, m_Claw, m_ElevatorProfiledPID, m_DrivetrainProfiledPID);
+    // PlayAndDock NOT TESTED !
     //return new PlayAndDock(m_Drivetrain, m_Elevator, m_Claw, m_ElevatorProfiledPID, m_DrivetrainProfiledPID);
-    return new PlayLeaveAndDock(m_Drivetrain, m_Elevator, m_Claw, m_ElevatorProfiledPID, m_DrivetrainProfiledPID);
+    //return new PlayLeaveAndDock(m_Drivetrain, m_Elevator, m_Claw, m_ElevatorProfiledPID, m_DrivetrainProfiledPID);
   }
 }

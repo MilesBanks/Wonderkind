@@ -13,15 +13,20 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ElevatorProfiledPID;
 
-
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class GrabAndGo extends SequentialCommandGroup {
   public GrabAndGo(Drivetrain m_Drivetrain, Elevator m_Elevator, Claw m_Claw, ElevatorProfiledPID m_ElevatorProfiledPID) {
     addCommands(
+      // run feed() in Drivetrain periodic
+      Commands.runOnce(
+        () -> {
+          Drivetrain.isArcadeDrive = false;
+        },
+        m_Drivetrain),
       // Remove driver input
       m_Drivetrain.driveForwardCommand(0).withTimeout(0.1),
       // Grab cone
-      m_Claw.clawShiftRightCommand(Constants.SpeedConstants.kClawShiftSpeed).withTimeout(1.50),
+      m_Claw.clawShiftRightCommand(Constants.SpeedConstants.kClawShiftSpeed).withTimeout(0.723),
       // Lift cone up
       Commands.runOnce(
         () -> {
@@ -39,7 +44,15 @@ public class GrabAndGo extends SequentialCommandGroup {
           m_ElevatorProfiledPID.setGoal(1.0);
           m_ElevatorProfiledPID.enable();
         },
-        m_Elevator)
+        m_Elevator),
+      new WaitCommand(1.0),
+      // stop running feed() in Drivetrain periodic. And disable elevator PID
+      Commands.runOnce(
+        () -> {
+          m_ElevatorProfiledPID.disable();
+          Drivetrain.isArcadeDrive = false;
+        },
+        m_Drivetrain)
       );
   }
 }

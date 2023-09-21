@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Drivetrain extends SubsystemBase {
+  
   private final static CANSparkMax LeftFrontMotor = new CANSparkMax(Constants.CAN_ID_Constants.kLeftFrontMotorID, MotorType.kBrushless);
   private final static CANSparkMax LeftBackMotor = new CANSparkMax(Constants.CAN_ID_Constants.kLeftBackMotorID, MotorType.kBrushless);
   private final static CANSparkMax RightFrontMotor = new CANSparkMax(Constants.CAN_ID_Constants.kRightFrontMotorID, MotorType.kBrushless);
@@ -24,7 +25,7 @@ public class Drivetrain extends SubsystemBase {
 
   private final RelativeEncoder leftRelativeEncoder = LeftFrontMotor.getEncoder();
   private final RelativeEncoder righRelativeEncoder = RightFrontMotor.getEncoder();
-//we can add back encoders but we arn't using them.
+  //we can add back encoders but we arn't using them.
   private final MotorControllerGroup LeftMotorGroup = new MotorControllerGroup(LeftFrontMotor, LeftBackMotor);
   private final MotorControllerGroup RightMotorGroup = new MotorControllerGroup(RightFrontMotor, RightBackMotor);
 
@@ -36,6 +37,8 @@ public class Drivetrain extends SubsystemBase {
   private static double rightMotorSpeed;
   private static double leftMotorVelocity;
   private static double rightMotorVelocity;
+
+  public static boolean isArcadeDrive;
   
   /** Creates a new Drivetrain. */
   public Drivetrain() {
@@ -56,6 +59,8 @@ public class Drivetrain extends SubsystemBase {
 
     LeftFrontMotor.getEncoder().setPosition(0); // Set default position = 0
     RightFrontMotor.getEncoder().setPosition(0);
+
+    Drive.setSafetyEnabled(false); // Disables safety for the DifferentialDrive
   }
 
   @Override
@@ -75,53 +80,46 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber(("leftMotor Speed"), leftMotorSpeed);
     SmartDashboard.putNumber(("rightMotor Speed"), rightMotorSpeed);
 
-    Drive.feed(); // hacky fix?
+    if (isArcadeDrive == false) { // call Drive.feed() when we need to
+      Drive.feed();
+    }
   }
 
-  public void OurDrive(double FWD, double ROT, double slowMo){
-    Drive.arcadeDrive(FWD/slowMo, (ROT/1.5)/(slowMo/2));
+  public void OurDrive(double FWD, double ROT, double slowMo, double rotationSlowMo){
+    Drive.arcadeDrive(FWD/slowMo, (ROT/1.5)/(rotationSlowMo));
   }
 
-    public void ResetEncoders(){
-      leftRelativeEncoder.setPosition(0);
-      righRelativeEncoder.setPosition(0);
-    }
-    public void driveForward(double speed){
-      Drive.feed(); //Do we need this here since it's in periodic?
-      LeftMotorGroup.set(speed);
-      RightMotorGroup.set(speed);
-    }
+  public void ResetEncoders(){
+    leftRelativeEncoder.setPosition(0);
+    righRelativeEncoder.setPosition(0);
+  }
+
+  public void driveForward(double speed){
+    LeftMotorGroup.set(speed);
+    RightMotorGroup.set(speed);
+  }
   
-    public Command driveForwardCommand(double speed){
-      return new StartEndCommand(() -> this.driveForward(speed), () -> this.driveForward(0.0), this);
-    }
+  public Command driveForwardCommand(double speed){
+    return new StartEndCommand(() -> this.driveForward(speed), () -> this.driveForward(0.0), this);
+  }
 
-    public void driveBackward(double speed){
-      LeftMotorGroup.set(-speed);
-      RightMotorGroup.set(-speed);
-    }
+  public void driveBackward(double speed){
+    LeftMotorGroup.set(-speed);
+    RightMotorGroup.set(-speed);
+  }
   
-    public Command driveBackwardCommand(double speed){
-      return new StartEndCommand(() -> this.driveBackward(speed), () -> this.driveBackward(0.0), this);
-    }
+  public Command driveBackwardCommand(double speed){
+    return new StartEndCommand(() -> this.driveBackward(speed), () -> this.driveBackward(0.0), this);
+  }
 
-    public static double getDrivetrainPosition() {
-      return (leftMotorPosition + rightMotorPosition)/2;
-    }
+  public static double getDrivetrainPosition() {
+    return (leftMotorPosition + rightMotorPosition)/2;
+  }
 
-    public static void setmotor(double output) {
-      LeftFrontMotor.set(output);
-      RightFrontMotor.set(-output); // right speed has to be negative when not in rightmotorgroup
-      LeftBackMotor.set(output);
-      RightBackMotor.set(-output);
-    }
-
-    /*public void cancelDrivePID(boolean output) {
-      OldDrivetrainPID.stopDrivePID = output;
-    }
-
-    public Command cancelDrivePIDCommand() {
-      return new StartEndCommand(() -> this.cancelDrivePID(false), () -> this.cancelDrivePID(false), this);
-    }
-    */
+  public static void setmotor(double output) {
+    LeftFrontMotor.set(output);
+    RightFrontMotor.set(-output); // right speed has to be negative when not in rightmotorgroup
+    LeftBackMotor.set(output);
+    RightBackMotor.set(-output);
+  }
 }
