@@ -41,9 +41,11 @@ public class PlayAndLeave extends SequentialCommandGroup {
       // Wait buffer
       new WaitCommand(1.5),
       // Back up past red line
-      m_Drivetrain.driveForwardCommand(0.6).withTimeout(2),
+      m_Drivetrain.driveForwardCommand(0.6).withTimeout(2.0),
       // Wait buffer
-      new WaitCommand(1.0)
+      new WaitCommand(10.5),
+      // Fix?
+      m_Drivetrain.driveForwardCommand(0.0).withTimeout(0.1)
       );
   }
 }

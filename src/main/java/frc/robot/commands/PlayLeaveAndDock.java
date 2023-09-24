@@ -47,7 +47,9 @@ public class PlayLeaveAndDock extends SequentialCommandGroup {
       // Back up onto dock
       m_Drivetrain.driveBackwardCommand(0.3).withTimeout(2.31),
       // Wait buffer
-      new WaitCommand(1.0)
+      new WaitCommand(3.0),
+      // Fix?
+      m_Drivetrain.driveForwardCommand(0.0).withTimeout(0.1)
       );
   }
 }
