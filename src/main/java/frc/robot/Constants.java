@@ -42,5 +42,7 @@ public final class Constants {
     public static final double gearboxRatio = 12.75;
     public static final double revToMeters = (1/gearboxRatio)*(Math.PI*wheelDiameter); //convert motor revolutions to distance in Meters
     public static final double RPMToMetersPerSec = revToMeters/60; //convert motor revolutions per minute to Meters per second
+    public static final double TicksToRev = (1/4096);
+    public static final double TicksToMeters =(revToMeters*TicksToRev);
   }
 }

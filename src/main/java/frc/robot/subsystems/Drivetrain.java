@@ -4,9 +4,7 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
@@ -18,13 +16,18 @@ import frc.robot.Constants;
 
 public class Drivetrain extends SubsystemBase {
   
-  private final static CANSparkMax LeftFrontMotor = new CANSparkMax(Constants.CAN_ID_Constants.kLeftFrontMotorID, MotorType.kBrushless);
-  private final static CANSparkMax LeftBackMotor = new CANSparkMax(Constants.CAN_ID_Constants.kLeftBackMotorID, MotorType.kBrushless);
-  private final static CANSparkMax RightFrontMotor = new CANSparkMax(Constants.CAN_ID_Constants.kRightFrontMotorID, MotorType.kBrushless);
-  private final static CANSparkMax RightBackMotor = new CANSparkMax(Constants.CAN_ID_Constants.kRightBackMotorID, MotorType.kBrushless);
+  //private final static CANSparkMax LeftFrontMotor = new CANSparkMax(Constants.CAN_ID_Constants.kLeftFrontMotorID, MotorType.kBrushless);
+  //private final static CANSparkMax LeftBackMotor = new CANSparkMax(Constants.CAN_ID_Constants.kLeftBackMotorID, MotorType.kBrushless);
+  //private final static CANSparkMax RightFrontMotor = new CANSparkMax(Constants.CAN_ID_Constants.kRightFrontMotorID, MotorType.kBrushless);
+  //private final static CANSparkMax RightBackMotor = new CANSparkMax(Constants.CAN_ID_Constants.kRightBackMotorID, MotorType.kBrushless);
 
-  private final RelativeEncoder leftRelativeEncoder = LeftFrontMotor.getEncoder();
-  private final RelativeEncoder righRelativeEncoder = RightFrontMotor.getEncoder();
+  private final static WPI_TalonSRX LeftFrontMotor = new WPI_TalonSRX(Constants.CAN_ID_Constants.kLeftFrontMotorID);
+  private final static WPI_TalonSRX LeftBackMotor = new WPI_TalonSRX(Constants.CAN_ID_Constants.kLeftBackMotorID);
+  private final static WPI_TalonSRX RightFrontMotor = new WPI_TalonSRX(Constants.CAN_ID_Constants.kRightFrontMotorID);
+  private final static WPI_TalonSRX RightBackMotor = new WPI_TalonSRX(Constants.CAN_ID_Constants.kRightBackMotorID);
+
+  ///private final RelativeEncoder leftRelativeEncoder = LeftFrontMotor.getEncoder();
+  ///private final RelativeEncoder righRelativeEncoder = RightFrontMotor.getEncoder();
   //we can add back encoders but we arn't using them.
   private final MotorControllerGroup LeftMotorGroup = new MotorControllerGroup(LeftFrontMotor, LeftBackMotor);
   private final MotorControllerGroup RightMotorGroup = new MotorControllerGroup(RightFrontMotor, RightBackMotor);
@@ -50,15 +53,11 @@ public class Drivetrain extends SubsystemBase {
     //RightFrontMotor.getEncoder().setInverted(false);
 
     //Convert encoder postion from revolutions to Meters
-    LeftFrontMotor.getEncoder().setPositionConversionFactor(Constants.DrivetrainConstants.revToMeters);
-    RightFrontMotor.getEncoder().setPositionConversionFactor(Constants.DrivetrainConstants.revToMeters);
-
+    
     //Convert encoder velocity from RPM to Meters/second
-    LeftFrontMotor.getEncoder().setVelocityConversionFactor(Constants.DrivetrainConstants.RPMToMetersPerSec);
-    RightFrontMotor.getEncoder().setVelocityConversionFactor(Constants.DrivetrainConstants.RPMToMetersPerSec);
 
-    LeftFrontMotor.getEncoder().setPosition(0); // Set default position = 0
-    RightFrontMotor.getEncoder().setPosition(0);
+    LeftFrontMotor.setSelectedSensorPosition(0); // Set default position = 0
+    RightFrontMotor.setSelectedSensorPosition(0);
 
     Drive.setSafetyEnabled(false); // Disables safety for the DifferentialDrive
   }
@@ -66,19 +65,19 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    leftMotorPosition = LeftFrontMotor.getEncoder().getPosition();
-    rightMotorPosition = -RightFrontMotor.getEncoder().getPosition(); // right speed negative
-    leftMotorSpeed = LeftFrontMotor.get();
-    rightMotorSpeed = RightFrontMotor.get();
-    leftMotorVelocity = LeftFrontMotor.getEncoder().getVelocity(); 
-    rightMotorVelocity = -RightFrontMotor.getEncoder().getVelocity(); // right velocity negative
+    leftMotorPosition = (LeftFrontMotor.getSelectedSensorPosition()*Constants.DrivetrainConstants.TicksToMeters);
+    rightMotorPosition = (-RightFrontMotor.getSelectedSensorPosition()*Constants.DrivetrainConstants.TicksToMeters); // right speed negative
+    //leftMotorSpeed = LeftFrontMotor.get();
+    //rightMotorSpeed = RightFrontMotor.get();
+    leftMotorVelocity = (LeftFrontMotor.getSelectedSensorVelocity()*Constants.DrivetrainConstants.TicksToMeters); 
+    rightMotorVelocity = (-RightFrontMotor.getSelectedSensorVelocity()*Constants.DrivetrainConstants.TicksToMeters); // right velocity negative
   
     SmartDashboard.putNumber(("leftMotor Position"), leftMotorPosition);
     SmartDashboard.putNumber(("rightMotor Position"), rightMotorPosition);
     SmartDashboard.putNumber(("leftMotor Velocity"), leftMotorVelocity);
     SmartDashboard.putNumber(("rightMotor Velocity"), rightMotorVelocity);
-    SmartDashboard.putNumber(("leftMotor Speed"), leftMotorSpeed);
-    SmartDashboard.putNumber(("rightMotor Speed"), rightMotorSpeed);
+    //SmartDashboard.putNumber(("leftMotor Speed"), leftMotorSpeed);
+    //SmartDashboard.putNumber(("rightMotor Speed"), rightMotorSpeed);
 
     if (isArcadeDrive == false) { // call Drive.feed() when we need to
       Drive.feed();
@@ -90,8 +89,15 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void ResetEncoders(){
-    leftRelativeEncoder.setPosition(0);
-    righRelativeEncoder.setPosition(0);
+    //leftRelativeEncoder.setPosition(0);
+    //righRelativeEncoder.setPosition(0);
+
+  LeftFrontMotor.setSelectedSensorPosition(0);
+  LeftBackMotor.setSelectedSensorPosition(0);
+  RightFrontMotor.setSelectedSensorPosition(0);
+  RightBackMotor.setSelectedSensorPosition(0);
+
+
   }
 
   public void driveForward(double speed){
