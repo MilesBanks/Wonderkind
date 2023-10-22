@@ -45,7 +45,7 @@ public class Elevator extends SubsystemBase {
 
     //slowMo = 1.0 + (m_ElevatorPosition/23);
     if (m_ElevatorPosition > 0) {
-      rotationSlowMo = 1.0 + (m_ElevatorPosition/40);
+      rotationSlowMo = 1.0 + (m_ElevatorPosition/160);//adjusted for CIM moter, for NEOs use 40
       slowMo = 1.0 + (Math.pow(m_ElevatorPosition, 1.50)/173);
     }
   }

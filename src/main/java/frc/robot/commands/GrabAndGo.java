@@ -26,7 +26,7 @@ public class GrabAndGo extends SequentialCommandGroup {
       // Remove driver input
       m_Drivetrain.driveForwardCommand(0).withTimeout(0.1),
       // Grab cone
-      m_Claw.clawShiftRightCommand(Constants.SpeedConstants.kClawShiftSpeed).withTimeout(0.723),
+      m_Claw.clawShiftRightCommand(Constants.SpeedConstants.kClawShiftSpeed).withTimeout(0.6),
       // Lift cone up
       Commands.runOnce(
         () -> {
