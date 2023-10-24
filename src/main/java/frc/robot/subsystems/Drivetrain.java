@@ -36,8 +36,6 @@ public class Drivetrain extends SubsystemBase {
 
   private static double leftMotorPosition;
   private static double rightMotorPosition;
-  private static double leftMotorSpeed;
-  private static double rightMotorSpeed;
   private static double leftMotorVelocity;
   private static double rightMotorVelocity;
 
@@ -67,8 +65,6 @@ public class Drivetrain extends SubsystemBase {
     // This method will be called once per scheduler run
     leftMotorPosition = (LeftFrontMotor.getSelectedSensorPosition()*Constants.DrivetrainConstants.TicksToMeters);
     rightMotorPosition = (-RightFrontMotor.getSelectedSensorPosition()*Constants.DrivetrainConstants.TicksToMeters); // right speed negative
-    //leftMotorSpeed = LeftFrontMotor.get();
-    //rightMotorSpeed = RightFrontMotor.get();
     leftMotorVelocity = (LeftFrontMotor.getSelectedSensorVelocity()*Constants.DrivetrainConstants.TicksToMeters); 
     rightMotorVelocity = (-RightFrontMotor.getSelectedSensorVelocity()*Constants.DrivetrainConstants.TicksToMeters); // right velocity negative
   
@@ -76,8 +72,6 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber(("rightMotor Position"), rightMotorPosition);
     SmartDashboard.putNumber(("leftMotor Velocity"), leftMotorVelocity);
     SmartDashboard.putNumber(("rightMotor Velocity"), rightMotorVelocity);
-    //SmartDashboard.putNumber(("leftMotor Speed"), leftMotorSpeed);
-    //SmartDashboard.putNumber(("rightMotor Speed"), rightMotorSpeed);
 
     if (isArcadeDrive == false) { // call Drive.feed() when we need to
       Drive.feed();
@@ -85,7 +79,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void OurDrive(double FWD, double ROT, double slowMo, double rotationSlowMo){
-    Drive.arcadeDrive(FWD/slowMo, (ROT/1.5)/(rotationSlowMo));
+    Drive.arcadeDrive(FWD/slowMo, (ROT/1.25)/(rotationSlowMo));
   }
 
   public void ResetEncoders(){
